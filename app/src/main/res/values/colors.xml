@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+    <!-- Background color for light CardView. -->
+    <color name="cardview_light_background">#FFFAFAFA</color>
+    <!-- Background color for dark CardView. -->
+    <color name="cardview_dark_background">#FF202020</color>
+    <!-- Shadow color for the first pixels around CardView. -->
+    <color name="cardview_shadow_start_color">#57000000</color>
+    <!-- Shadow color for the furthest pixels around CardView. -->
+    <color name="cardview_shadow_end_color">#03000000</color>
+
+    <color name="spinner_divide">#ffd1d1d1</color>
+    <color name="common_background">#fff6f6f6</color>
+    <color name="common_text">#ff333333</color>
+    <color name="common_disabled">#ffd1d1d1</color>
+    <color name="theme_yellow">#ff8903</color>
+    <color name="white">#ffffff</color>
+    <color name="common_divide">#ffd1d1d1</color>
+</resources>

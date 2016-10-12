@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Reading</string>
+    <string name="dialog_loading_tip">请稍候...</string>
+</resources>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?><!-- 界面整体风格是从右往左进场，出场如果带左平移，会有右边黑块的视觉落差，所以制定一個粘連動畫 -->
+<set xmlns:android="http://schemas.android.com/apk/res/android">
+    <alpha
+        android:fromAlpha="1.0"
+        android:toAlpha="1.0"
+        android:duration="@android:integer/config_mediumAnimTime" />
+</set>
