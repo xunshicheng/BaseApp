@@ -9,14 +9,16 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.example.cxs.baseapp.R;
 import com.example.cxs.baseapp.manager.EventManager;
+import com.example.cxs.baseapp.mvp.base.IBaseView;
 
 /**
  * Fragment基类，提供通用+“非常”常用的接口方法
  */
-public class BaseFragment extends Fragment {
+public class BaseFragment extends Fragment implements IBaseView {
     public static final int RESULT_CANCELED = 0;
     public static final int RESULT_OK = -1;
     private static final String TAG = "fragment";
@@ -101,6 +103,7 @@ public class BaseFragment extends Fragment {
     public void onDestroy() {
         Log.i(TAG, "[onDestroy] " + fragmentTag);
         super.onDestroy();
+
     }
 
     /**
@@ -296,4 +299,10 @@ public class BaseFragment extends Fragment {
         }
     }
 
+    @Override
+    public void showErrorMsg(String msg) {
+        if(!TextUtils.isEmpty(msg)) {
+            Toast.makeText(getActivity(), msg, Toast.LENGTH_LONG).show();
+        }
+    }
 }

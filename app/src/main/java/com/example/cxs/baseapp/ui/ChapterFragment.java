@@ -9,28 +9,41 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
-
 import com.example.cxs.baseapp.App;
 import com.example.cxs.baseapp.R;
 import com.example.cxs.baseapp.manager.http.ErrorBean;
-import com.example.cxs.baseapp.manager.http.HttpManager;
-import com.example.cxs.baseapp.manager.http.ResponseBean;
 import com.example.cxs.baseapp.manager.http.response.DazhuzaiChapterResp;
 import com.example.cxs.baseapp.manager.http.response.DazhuzaiResponse;
+import com.example.cxs.baseapp.mvp.component.DaggerChaptersComponent;
+import com.example.cxs.baseapp.mvp.interfaces.ChaptersFragmentInterface;
+import com.example.cxs.baseapp.mvp.module.FragmentModule;
+import com.example.cxs.baseapp.mvp.presenter.ChaptersPresenter;
 import com.example.cxs.baseapp.ui.base.BaseFragment;
 import com.example.cxs.baseapp.util.UIUtil;
-import com.google.gson.reflect.TypeToken;
-
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+
+import javax.inject.Inject;
 
 /**
  * Created by chengxunshi on 2016/8/11.
  */
-public class ChapterFragment extends BaseFragment {
+public class ChapterFragment extends BaseFragment implements ChaptersFragmentInterface {
 
     public static final String TAG = "ChapterFragment";
     public static final String CHAPTER = "chapter";
+
+    @Inject
+    ChaptersPresenter mChaptersPresenter;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        DaggerChaptersComponent.builder()
+                                .fragmentModule(new FragmentModule(this))
+                                .build()
+                                .inject(this);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -48,23 +61,13 @@ public class ChapterFragment extends BaseFragment {
             @Override
             public void onClick(View view, int position) {
                 DazhuzaiResponse.Chapter chapter = adapter.getChapter(position);
-                requestChapter(chapter);
+                UIUtil.showProgressDialog(getFragmentManager(), null, true);
+                mChaptersPresenter.loadChapters(chapter);
             }
         });
         recyclerView.setAdapter(adapter);
     }
 
-    public void requestChapter(DazhuzaiResponse.Chapter chapter){
-        if(null == chapter){
-            return;
-        }
-        int start = chapter.url.lastIndexOf("/");
-        String subUrl = chapter.url.substring(start, chapter.url.length());
-        String url = App.BaseUrl + subUrl;
-        UIUtil.showProgressDialog(getFragmentManager(), null, true);
-        HttpManager.sendRequest(url,
-                new TypeToken<ResponseBean<DazhuzaiChapterResp>>() {}.getType());
-    }
 
     @Subscribe(threadMode= ThreadMode.MAIN)
     public void onEvent(ErrorBean errorBean){
@@ -79,6 +82,17 @@ public class ChapterFragment extends BaseFragment {
         Intent intent = new Intent(getActivity(), ChapterReadingFragment.class);
         intent.putExtra(CHAPTER, response.text);
         startFragment(intent);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mChaptersPresenter.detachView();
+    }
+
+    @Override
+    public void refreshUI() {
+
     }
 
 }

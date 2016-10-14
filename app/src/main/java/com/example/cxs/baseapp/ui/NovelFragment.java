@@ -21,6 +21,9 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.Collections;
 
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
 /**
  * Created by chengxunshi on 2016/8/11.
  */
@@ -31,19 +34,16 @@ public class NovelFragment extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_novels, container, false);
-        init(rootView);
+        ButterKnife.bind(this, rootView);
         return rootView;
     }
 
-    private void init(View rootView){
-        rootView.findViewById(R.id.btn_novel_dazhuzai).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                UIUtil.showProgressDialog(getFragmentManager(), null, true);
-                HttpManager.sendRequest(App.BaseUrl,
-                        new TypeToken<ResponseBean<DazhuzaiResponse>>() {}.getType());
-            }
-        });
+    @OnClick(R.id.btn_novel_dazhuzai)
+    public void getChapterList(){
+        UIUtil.showProgressDialog(getFragmentManager(), null, true);
+        HttpManager.sendRequest(App.BaseUrl,
+                new TypeToken<ResponseBean<DazhuzaiResponse>>() {}.getType());
+
     }
 
     @Subscribe(threadMode=ThreadMode.MAIN)
