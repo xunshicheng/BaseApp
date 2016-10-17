@@ -14,7 +14,7 @@ import com.example.cxs.baseapp.R;
 import com.example.cxs.baseapp.manager.http.ErrorBean;
 import com.example.cxs.baseapp.manager.http.response.DazhuzaiChapterResp;
 import com.example.cxs.baseapp.manager.http.response.DazhuzaiResponse;
-import com.example.cxs.baseapp.mvp.component.DaggerChaptersComponent;
+import com.example.cxs.baseapp.mvp.component.DaggerFragmentComponent;
 import com.example.cxs.baseapp.mvp.interfaces.ChaptersFragmentInterface;
 import com.example.cxs.baseapp.mvp.module.FragmentModule;
 import com.example.cxs.baseapp.mvp.presenter.ChaptersPresenter;
@@ -39,10 +39,11 @@ public class ChapterFragment extends BaseFragment implements ChaptersFragmentInt
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        DaggerChaptersComponent.builder()
-                                .fragmentModule(new FragmentModule(this))
-                                .build()
-                                .inject(this);
+        DaggerFragmentComponent.builder()
+                            .appComponent(App.getAppComponent())
+                            .fragmentModule(new FragmentModule(this))
+                            .build()
+                            .inject(this);
     }
 
     @Override

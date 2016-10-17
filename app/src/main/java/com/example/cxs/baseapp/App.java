@@ -4,6 +4,9 @@ import android.app.Application;
 import android.content.Context;
 
 import com.example.cxs.baseapp.manager.http.response.DazhuzaiResponse;
+import com.example.cxs.baseapp.mvp.component.AppComponent;
+import com.example.cxs.baseapp.mvp.component.DaggerAppComponent;
+import com.example.cxs.baseapp.mvp.module.AppModule;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,5 +41,9 @@ public class App extends Application {
             chapters.clear();
             chapters.addAll(chapterList);
         }
+    }
+
+    public static AppComponent getAppComponent() {
+        return DaggerAppComponent.builder().appModule(new AppModule()).build();
     }
 }

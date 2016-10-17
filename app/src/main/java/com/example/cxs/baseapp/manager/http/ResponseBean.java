@@ -1,11 +1,11 @@
 
 package com.example.cxs.baseapp.manager.http;
 
-public class ResponseBean<T> {
+public class ResponseBean<V> {
 
     public int code;
 
     public String msg;
 
-    public T data;
+    public V data;
 }

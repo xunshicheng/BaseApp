@@ -7,22 +7,29 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+
 import com.example.cxs.baseapp.App;
 import com.example.cxs.baseapp.R;
+import com.example.cxs.baseapp.http.RetrofitHelper;
 import com.example.cxs.baseapp.manager.http.ErrorBean;
-import com.example.cxs.baseapp.manager.http.HttpManager;
 import com.example.cxs.baseapp.manager.http.ResponseBean;
 import com.example.cxs.baseapp.manager.http.response.DazhuzaiResponse;
+import com.example.cxs.baseapp.mvp.component.DaggerFragmentComponent;
+import com.example.cxs.baseapp.mvp.module.FragmentModule;
 import com.example.cxs.baseapp.ui.base.BaseFragment;
 import com.example.cxs.baseapp.util.UIUtil;
-import com.google.gson.reflect.TypeToken;
+
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.Collections;
 
+import javax.inject.Inject;
+
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by chengxunshi on 2016/8/11.
@@ -30,6 +37,19 @@ import butterknife.OnClick;
 public class NovelFragment extends BaseFragment {
 
     public static final String TAG = "NovelFragment";
+
+    @Inject
+    RetrofitHelper retrofitHelper;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        DaggerFragmentComponent.builder()
+                .appComponent(App.getAppComponent())
+                .fragmentModule(new FragmentModule(this))
+                .build()
+                .inject(this);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -41,8 +61,33 @@ public class NovelFragment extends BaseFragment {
     @OnClick(R.id.btn_novel_dazhuzai)
     public void getChapterList(){
         UIUtil.showProgressDialog(getFragmentManager(), null, true);
-        HttpManager.sendRequest(App.BaseUrl,
-                new TypeToken<ResponseBean<DazhuzaiResponse>>() {}.getType());
+//        HttpManager.sendRequest(App.BaseUrl,
+//                new TypeToken<ResponseBean<DazhuzaiResponse>>() {}.getType());
+
+        retrofitHelper.getChapterList()
+                .subscribeOn(Schedulers.io())
+                .doOnNext(new Action1<ResponseBean<DazhuzaiResponse>>() {
+                    @Override
+                    public void call(ResponseBean<DazhuzaiResponse> response) {
+                        Log.i(TAG, "====doOnNext======");
+                        Collections.reverse(response.data.chapterList);
+                        App.saveChapters(response.data.chapterList);
+                    }
+                })
+                .subscribe(new Action1<Object>() {
+                    @Override
+                    public void call(Object o) {
+                        Log.i(TAG, "====subscribe======");
+                        dismissDialogIfExist(null);
+                        Intent intent = new Intent(getActivity(), ChapterFragment.class);
+                        startFragment(intent);
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        throwable.printStackTrace();
+                    }
+                });
 
     }
 
