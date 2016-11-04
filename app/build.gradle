@@ -25,6 +25,7 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:24.2.0'
     compile 'com.android.support:recyclerview-v7:24.2.0'
+    compile 'com.android.support:design:24.2.0'
 
     //该版本必须有@Subscribe(threadMode=ThreadMode.MAIN)声明,threadMode默认为POSTING
     compile 'org.greenrobot:eventbus:3.0.0'

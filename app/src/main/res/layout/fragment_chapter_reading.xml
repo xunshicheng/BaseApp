@@ -2,19 +2,27 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:background="@drawable/theme_leather_bg">
 
-    <ScrollView
+    <!--<ScrollView-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent">-->
+
+    <!--<TextView-->
+    <!--android:id="@+id/tv_chapter_content"-->
+    <!--style="@style/CommonText"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:padding="4dp"/>-->
+
+    <!--</ScrollView>-->
+
+    <FrameLayout
+        android:id="@+id/flReadWidget"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <TextView
-            android:id="@+id/tv_chapter_content"
-            style="@style/CommonText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="4dp"/>
-
-    </ScrollView>
+        android:layout_height="match_parent"
+        android:clickable="false"
+        android:focusable="false"
+        android:layerType="hardware" />
 
 </LinearLayout>
