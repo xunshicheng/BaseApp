@@ -49,19 +49,19 @@ public class RetrofitHelper {
     private DazhuzaiApi getDazhuzaiApiService() {
         Retrofit dazhuzaiRetrofit = new Retrofit.Builder()
                 .baseUrl(DazhuzaiApi.HOST_URL)
-                .client(okHttpClient)
-                .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(okHttpClient)
                 .build();
         return dazhuzaiRetrofit.create(DazhuzaiApi.class);
     }
 
-    public Observable<ResponseBean<DazhuzaiResponse>> getChapterList(){
+    public Observable<DazhuzaiResponse> getChapterList() {
         return dazhuzaiApi.getChapterList();
     }
 
-    public Observable<ResponseBean<DazhuzaiChapterResp>> getChapter(String chapter){
-        return dazhuzaiApi.getChapter(chapter);
+    public Observable<DazhuzaiChapterResp> getChapter(String chapterUrl) {
+        return dazhuzaiApi.getChapter(chapterUrl);
     }
 
 }

@@ -11,8 +11,10 @@ import android.graphics.Path;
 import android.graphics.PointF;
 import android.graphics.Region;
 import android.graphics.drawable.GradientDrawable;
+import android.text.TextUtils;
 import android.view.MotionEvent;
 
+import com.example.cxs.baseapp.App;
 import com.example.cxs.baseapp.util.ToastUtils;
 
 
@@ -522,14 +524,30 @@ public class PageWidget extends BaseReadView {
                 pagefactory.onDraw(mCurrentPageCanvas);
                 if (actiondownX < mScreenWidth / 2) {// 从左翻
                     if (!pagefactory.prePage()) {
-                        ToastUtils.showSingleToast("没有上一页啦");
+                        if (curChapterNum <= 0) {
+                            ToastUtils.showSingleToast("没有上一页啦");
+                        } else {
+                            if (TextUtils.isEmpty(preChapter)) {
+                                loadChapterListener.loadPreChapter();
+                            } else {
+                                refreshContent(preChapter, curChapterNum - 1);
+                            }
+                        }
                         return false;
                     }
                     abortAnimation();
                     pagefactory.onDraw(mNextPageCanvas);
                 } else if (actiondownX >= mScreenWidth / 2) {// 从右翻
                     if (!pagefactory.nextPage()) {
-                        ToastUtils.showSingleToast("没有下一页啦");
+                        if (curChapterNum >= App.getChapters().size() - 1) {
+                            ToastUtils.showSingleToast("没有下一页啦");
+                        } else {
+                            if (TextUtils.isEmpty(nextChapter)) {
+                                loadChapterListener.loadNextChapter();
+                            } else {
+                                refreshContent(nextChapter, curChapterNum + 1);
+                            }
+                        }
                         return false;
                     }
                     abortAnimation();

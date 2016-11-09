@@ -4,9 +4,11 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.PointF;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Scroller;
 
+import com.example.cxs.baseapp.common.Constant;
 import com.example.cxs.baseapp.util.ScreenUtils;
 import com.example.cxs.baseapp.util.ToastUtils;
 
@@ -22,8 +24,10 @@ public abstract class BaseReadView extends View {
     protected PageFactory pagefactory = null;
 
     protected OnReadStateChangeListener listener;
-    protected String chapterContent;
+    protected String chapterContent, preChapter, nextChapter;
+    protected int curChapterNum;
     public boolean isPrepared = false;
+    LoadChapterListener loadChapterListener;
 
     Scroller mScroller;
 
@@ -46,15 +50,29 @@ public abstract class BaseReadView extends View {
         pagefactory.setOnReadStateChangeListener(listener);
     }
 
-    public synchronized void beginReading() {
-        if (!isPrepared) {
-            try {
-                pagefactory.onDraw(mCurrentPageCanvas);
-                postInvalidate();
-            } catch (Exception e) {
+    public void refreshContent(String content, int chapterNum) {
+        if (!TextUtils.isEmpty(chapterContent)) {
+            if (chapterNum < curChapterNum) {
+                preChapter = null;
+                nextChapter = chapterContent;
+            } else if (chapterNum > curChapterNum) {
+                preChapter = chapterContent;
+                nextChapter = null;
             }
-            isPrepared = true;
         }
+        curChapterNum = chapterNum;
+        chapterContent = content;
+        pagefactory.refreshContent(content);
+        beginReading();
+    }
+
+    public synchronized void beginReading() {
+        try {
+            pagefactory.onDraw(mCurrentPageCanvas);
+            postInvalidate();
+        } catch (Exception e) {
+        }
+        isPrepared = true;
     }
 
     @Override
@@ -140,5 +158,15 @@ public abstract class BaseReadView extends View {
 
     public void setTime(String time) {
         pagefactory.setTime(time);
+    }
+
+    public void setLoadChapterListener(LoadChapterListener listener) {
+        loadChapterListener = listener;
+    }
+
+    public interface LoadChapterListener {
+        public void loadPreChapter();
+
+        public void loadNextChapter();
     }
 }

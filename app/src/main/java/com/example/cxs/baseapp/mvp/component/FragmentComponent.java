@@ -2,6 +2,7 @@ package com.example.cxs.baseapp.mvp.component;
 
 import com.example.cxs.baseapp.mvp.module.FragmentModule;
 import com.example.cxs.baseapp.ui.ChapterFragment;
+import com.example.cxs.baseapp.ui.ChapterReadingFragment;
 import com.example.cxs.baseapp.ui.NovelFragment;
 
 import javax.inject.Singleton;
@@ -19,4 +20,5 @@ public interface FragmentComponent {
     void inject(NovelFragment fragment);
     void inject(ChapterFragment chapterFragment);
 
+    void inject(ChapterReadingFragment chapterReadingFragment);
 }

@@ -100,6 +100,13 @@ public class PageFactory {
         setBattery(50);
     }
 
+    public void refreshContent(String content) {
+        chapterContent = content;
+        curEndPos = 0;
+        curBeginPos = 0;
+        currentPage = 1;
+        mLines.clear();
+    }
 
     /**
      * 绘制阅读页面
@@ -121,8 +128,8 @@ public class PageFactory {
 //                canvas.drawColor(Color.WHITE);
 //            }
             // 绘制标题
-            canvas.drawText("-----Title-----", marginWidth, y, mTitlePaint);
-            y += marginHeight;
+//            canvas.drawText("-----Title-----", marginWidth, y, mTitlePaint);
+//            y += marginHeight;
             // 绘制阅读页面文字
             for (String line : mLines) {
                 y += mLineSpace;

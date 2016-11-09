@@ -6,6 +6,7 @@ import com.example.cxs.baseapp.manager.http.response.DazhuzaiResponse;
 
 import retrofit2.http.GET;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 import rx.Observable;
 
 /**
@@ -13,11 +14,12 @@ import rx.Observable;
  */
 public interface DazhuzaiApi {
 
-    public final static String HOST_URL = "http://45.78.39.97:8080/";
+    public final static String HOST_URL = "http://api.zhuishushenqi.com/";
 
-    @GET("dazhuzai")
-    Observable<ResponseBean<DazhuzaiResponse>> getChapterList();
+    @GET("mix-atoc/51d11e782de6405c45000068")
+    Observable<DazhuzaiResponse> getChapterList();
 
-    @GET("dazhuzai/{chapter}")
-    Observable<ResponseBean<DazhuzaiChapterResp>> getChapter(@Path("chapter") String chapter);
+    @GET("http://chapter2.zhuishushenqi.com/chapter/{url}")
+    Observable<DazhuzaiChapterResp> getChapter(@Path("url") String url);
+
 }

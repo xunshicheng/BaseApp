@@ -14,14 +14,12 @@ import android.widget.Toast;
 import com.example.cxs.baseapp.App;
 import com.example.cxs.baseapp.R;
 import com.example.cxs.baseapp.manager.http.ErrorBean;
-import com.example.cxs.baseapp.manager.http.response.DazhuzaiChapterResp;
 import com.example.cxs.baseapp.manager.http.response.DazhuzaiResponse;
 import com.example.cxs.baseapp.mvp.component.DaggerFragmentComponent;
 import com.example.cxs.baseapp.mvp.interfaces.ChaptersFragmentInterface;
 import com.example.cxs.baseapp.mvp.module.FragmentModule;
 import com.example.cxs.baseapp.mvp.presenter.ChaptersPresenter;
 import com.example.cxs.baseapp.ui.base.BaseFragment;
-import com.example.cxs.baseapp.util.UIUtil;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -40,7 +38,7 @@ import butterknife.OnClick;
 public class ChapterFragment extends BaseFragment implements ChaptersFragmentInterface {
 
     public static final String TAG = "ChapterFragment";
-    public static final String CHAPTER = "chapter";
+    public static final String CHAPTER_NUM = "chapter_num";
     private SwipeRefreshLayout rootLayout;
     private ChapterAdapter adapter;
 
@@ -73,9 +71,9 @@ public class ChapterFragment extends BaseFragment implements ChaptersFragmentInt
         adapter.setItemListener(new ChapterAdapter.RecyclerViewItemListener() {
             @Override
             public void onClick(View view, int position) {
-                DazhuzaiResponse.Chapter chapter = adapter.getChapter(position);
-                UIUtil.showProgressDialog(getFragmentManager(), null, true);
-                mChaptersPresenter.loadChapters(chapter);
+                Intent intent = new Intent(getActivity(), ChapterReadingFragment.class);
+                intent.putExtra(CHAPTER_NUM, position);
+                startFragment(intent);
             }
         });
         recyclerView.setAdapter(adapter);
@@ -84,7 +82,7 @@ public class ChapterFragment extends BaseFragment implements ChaptersFragmentInt
             @Override
             public void onRefresh() {
                 Log.i(TAG, "====onRefresh======");
-                mChaptersPresenter.refreshChapList();
+                mChaptersPresenter.getChapterList();
             }
         });
     }
@@ -107,22 +105,13 @@ public class ChapterFragment extends BaseFragment implements ChaptersFragmentInt
         Toast.makeText(getActivity(), errorBean.msg, Toast.LENGTH_LONG).show();
     }
 
-    @Subscribe
-    public void onEvent(DazhuzaiChapterResp response){
-        Log.i(TAG, "--------DazhuzaiChapterResp--------");
-        dismissDialogIfExist(null);
-        Intent intent = new Intent(getActivity(), ChapterReadingFragment.class);
-        intent.putExtra(CHAPTER, response.text);
-        startFragment(intent);
-    }
-
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEvent(DazhuzaiResponse response) {
         Log.i(TAG, "--------DazhuzaiResponse--------");
         if (rootLayout.isRefreshing()) {
             rootLayout.setRefreshing(false);
         }
-        adapter.setData(response.chapterList);
+        adapter.setData(response.mixToc.chapters);
     }
 
     @Override

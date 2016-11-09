@@ -16,14 +16,15 @@ import java.util.List;
  */
 public class ChapterAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
-    private List<DazhuzaiResponse.Chapter> data = new ArrayList<>();
+    private List<DazhuzaiResponse.MixToc.ChapterIntro> data = new ArrayList<>();
 
     private RecyclerViewItemListener listener;
 
     public ChapterAdapter(){
 
     }
-    public void setData(List<DazhuzaiResponse.Chapter> list){
+
+    public void setData(List<DazhuzaiResponse.MixToc.ChapterIntro> list) {
         data.clear();
         data.addAll(list);
         notifyDataSetChanged();
@@ -33,7 +34,7 @@ public class ChapterAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         this.listener = listener;
     }
 
-    public DazhuzaiResponse.Chapter getChapter(int position) {
+    public DazhuzaiResponse.MixToc.ChapterIntro getChapter(int position) {
         if(null != data && position < data.size()){
             return data.get(position);
         }
@@ -57,9 +58,9 @@ public class ChapterAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if(null != data && position >= 0 && position < data.size()){
             ContentViewHolder viewHolder = (ContentViewHolder) holder;
-            DazhuzaiResponse.Chapter chapter = data.get(position);
+            DazhuzaiResponse.MixToc.ChapterIntro chapter = data.get(position);
             viewHolder.title.setText(chapter.title);
-            viewHolder.url = chapter.url;
+            viewHolder.url = chapter.link;
 
         }
     }

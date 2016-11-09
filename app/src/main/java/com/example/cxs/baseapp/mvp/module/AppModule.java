@@ -17,7 +17,6 @@ public class AppModule {
 
     }
 
-
     @Provides
     RetrofitHelper provideRetrofitHelper() {
         return RetrofitHelper.getInstance();

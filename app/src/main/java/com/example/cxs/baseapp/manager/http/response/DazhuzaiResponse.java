@@ -3,6 +3,7 @@ package com.example.cxs.baseapp.manager.http.response;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -10,39 +11,17 @@ import java.util.List;
  */
 public class DazhuzaiResponse {
 
-    public List<Chapter> chapterList;
+    public MixToc mixToc;
 
-    public static class Chapter implements Parcelable {
-        public String url;
-        public String title;
+    public static class MixToc {
 
-        @Override
-        public int describeContents() {
-            return 0;
+        public String _id;
+        public List<ChapterIntro> chapters;
+
+        public static class ChapterIntro {
+            public String title;
+            public String link;
         }
 
-        public Chapter(Parcel in) {
-            url = in.readString();
-            title = in.readString();
-        }
-
-        @Override
-        public void writeToParcel(Parcel dest, int flags) {
-            dest.writeString(url);
-            dest.writeString(title);
-        }
-
-        public static final Parcelable.Creator<Chapter> CREATOR =
-            new Parcelable.Creator<Chapter>() {
-                @Override
-                public Chapter createFromParcel(Parcel source) {
-                    return new Chapter(source);
-                }
-
-                @Override
-                public Chapter[] newArray(int size) {
-                    return new Chapter[0];
-                }
-            };
     }
 }

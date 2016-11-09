@@ -16,9 +16,7 @@ import java.util.List;
  */
 public class App extends Application {
 
-    public final static String BaseUrl = "http://45.78.39.97:8080/dazhuzai";
-
-    private static List<DazhuzaiResponse.Chapter> chapters = new ArrayList<>();
+    private static List<DazhuzaiResponse.MixToc.ChapterIntro> chapters = new ArrayList<>();
 
     private static Context mContext;
 
@@ -32,11 +30,11 @@ public class App extends Application {
         return mContext;
     }
 
-    public static List getChapters(){
+    public static List<DazhuzaiResponse.MixToc.ChapterIntro> getChapters() {
         return chapters;
     }
 
-    public static void saveChapters(List<DazhuzaiResponse.Chapter> chapterList) {
+    public static void saveChapters(List<DazhuzaiResponse.MixToc.ChapterIntro> chapterList) {
         if(null != chapterList && chapterList.size() > 0){
             chapters.clear();
             chapters.addAll(chapterList);

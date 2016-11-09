@@ -10,12 +10,11 @@ import android.widget.Toast;
 
 import com.example.cxs.baseapp.App;
 import com.example.cxs.baseapp.R;
-import com.example.cxs.baseapp.http.RetrofitHelper;
 import com.example.cxs.baseapp.manager.http.ErrorBean;
-import com.example.cxs.baseapp.manager.http.ResponseBean;
 import com.example.cxs.baseapp.manager.http.response.DazhuzaiResponse;
 import com.example.cxs.baseapp.mvp.component.DaggerFragmentComponent;
 import com.example.cxs.baseapp.mvp.module.FragmentModule;
+import com.example.cxs.baseapp.mvp.presenter.ChaptersPresenter;
 import com.example.cxs.baseapp.ui.base.BaseFragment;
 import com.example.cxs.baseapp.util.UIUtil;
 
@@ -28,8 +27,6 @@ import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import rx.functions.Action1;
-import rx.schedulers.Schedulers;
 
 /**
  * Created by chengxunshi on 2016/8/11.
@@ -39,7 +36,7 @@ public class NovelFragment extends BaseFragment {
     public static final String TAG = "NovelFragment";
 
     @Inject
-    RetrofitHelper retrofitHelper;
+    ChaptersPresenter mChaptersPresenter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -61,33 +58,7 @@ public class NovelFragment extends BaseFragment {
     @OnClick(R.id.btn_novel_dazhuzai)
     public void getChapterList(){
         UIUtil.showProgressDialog(getFragmentManager(), null, true);
-//        HttpManager.sendRequest(App.BaseUrl,
-//                new TypeToken<ResponseBean<DazhuzaiResponse>>() {}.getType());
-
-        retrofitHelper.getChapterList()
-                .subscribeOn(Schedulers.io())
-                .doOnNext(new Action1<ResponseBean<DazhuzaiResponse>>() {
-                    @Override
-                    public void call(ResponseBean<DazhuzaiResponse> response) {
-                        Log.i(TAG, "====doOnNext======");
-                        Collections.reverse(response.data.chapterList);
-                        App.saveChapters(response.data.chapterList);
-                    }
-                })
-                .subscribe(new Action1<Object>() {
-                    @Override
-                    public void call(Object o) {
-                        Log.i(TAG, "====subscribe======");
-                        dismissDialogIfExist(null);
-                        Intent intent = new Intent(getActivity(), ChapterFragment.class);
-                        startFragment(intent);
-                    }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        throwable.printStackTrace();
-                    }
-                });
+        mChaptersPresenter.getChapterList();
 
     }
 
@@ -101,8 +72,8 @@ public class NovelFragment extends BaseFragment {
     public void onEvent(DazhuzaiResponse response){
         Log.i(TAG, "--------DazhuzaiResponse--------");
         dismissDialogIfExist(null);
-        Collections.reverse(response.chapterList);
-        App.saveChapters(response.chapterList);
+        Collections.reverse(response.mixToc.chapters);
+        App.saveChapters(response.mixToc.chapters);
         Intent intent = new Intent(getActivity(), ChapterFragment.class);
         startFragment(intent);
     }

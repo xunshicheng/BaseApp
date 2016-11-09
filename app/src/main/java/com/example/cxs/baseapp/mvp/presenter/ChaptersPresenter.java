@@ -4,11 +4,10 @@ import com.example.cxs.baseapp.App;
 import com.example.cxs.baseapp.http.RetrofitHelper;
 import com.example.cxs.baseapp.manager.EventManager;
 import com.example.cxs.baseapp.manager.http.ErrorBean;
-import com.example.cxs.baseapp.manager.http.ResponseBean;
 import com.example.cxs.baseapp.manager.http.response.DazhuzaiChapterResp;
 import com.example.cxs.baseapp.manager.http.response.DazhuzaiResponse;
 import com.example.cxs.baseapp.mvp.base.BasePresenter;
-import com.example.cxs.baseapp.ui.ChapterFragment;
+import com.example.cxs.baseapp.ui.base.BaseFragment;
 
 import java.util.Collections;
 
@@ -21,7 +20,7 @@ import rx.schedulers.Schedulers;
 /**
  * Created by chengxunshi on 16/10/12.
  */
-public class ChaptersPresenter extends BasePresenter<ChapterFragment> {
+public class ChaptersPresenter extends BasePresenter<BaseFragment> {
 
     @Inject
     RetrofitHelper retrofitHelper;
@@ -31,19 +30,16 @@ public class ChaptersPresenter extends BasePresenter<ChapterFragment> {
 
     }
 
-    public void loadChapters(DazhuzaiResponse.Chapter chapter){
-        if(null == chapter){
+    public void loadChapters(DazhuzaiResponse.MixToc.ChapterIntro chapterIntro) {
+        if (null == chapterIntro) {
             return;
         }
-        int start = chapter.url.lastIndexOf("/");
-        final String subUrl = chapter.url.substring(start + 1, chapter.url.length());
-
-        retrofitHelper.getChapter(subUrl)
+        retrofitHelper.getChapter(chapterIntro.link)
                 .subscribeOn(Schedulers.io())
-                .subscribe(new Action1<ResponseBean<DazhuzaiChapterResp>>() {
+                .subscribe(new Action1<DazhuzaiChapterResp>() {
                     @Override
-                    public void call(ResponseBean<DazhuzaiChapterResp> dazhuzaiChapterRespResponseBean) {
-                        EventManager.post(dazhuzaiChapterRespResponseBean.data);
+                    public void call(DazhuzaiChapterResp dazhuzaiChapterRespResponseBean) {
+                        EventManager.post(dazhuzaiChapterRespResponseBean);
                     }
                 }, new Action1<Throwable>() {
                     @Override
@@ -54,27 +50,27 @@ public class ChaptersPresenter extends BasePresenter<ChapterFragment> {
                 });
     }
 
-    public void refreshChapList() {
+    public void getChapterList() {
         retrofitHelper.getChapterList()
                 .subscribeOn(Schedulers.io())
-                .filter(new Func1<ResponseBean<DazhuzaiResponse>, Boolean>() {
+                .filter(new Func1<DazhuzaiResponse, Boolean>() {
                     @Override
-                    public Boolean call(ResponseBean<DazhuzaiResponse> response) {
-                        return response.data.chapterList.size() > 0;
+                    public Boolean call(DazhuzaiResponse response) {
+                        return response.mixToc.chapters.size() > 0;
                     }
                 })
-                .doOnNext(new Action1<ResponseBean<DazhuzaiResponse>>() {
+                .doOnNext(new Action1<DazhuzaiResponse>() {
                     @Override
-                    public void call(ResponseBean<DazhuzaiResponse> response) {
-                        Collections.reverse(response.data.chapterList);
-                        App.saveChapters(response.data.chapterList);
+                    public void call(DazhuzaiResponse response) {
+                        Collections.reverse(response.mixToc.chapters);
+                        App.saveChapters(response.mixToc.chapters);
                     }
                 })
 //                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<ResponseBean<DazhuzaiResponse>>() {
+                .subscribe(new Action1<DazhuzaiResponse>() {
                     @Override
-                    public void call(ResponseBean<DazhuzaiResponse> res) {
-                        EventManager.post(res.data);
+                    public void call(DazhuzaiResponse res) {
+                        EventManager.post(res);
                     }
                 }, new Action1<Throwable>() {
                     @Override
